@@ -30,6 +30,7 @@ import io.airlift.json.JsonModule;
 import io.airlift.log.LogJmxModule;
 import io.airlift.log.Logger;
 import io.airlift.log.TerminalColors;
+import io.airlift.node.NodeInfo;
 import io.airlift.node.NodeModule;
 import io.airlift.openmetrics.JmxOpenMetricsModule;
 import io.airlift.tracing.TracingModule;
@@ -39,6 +40,7 @@ import io.trino.cache.CacheManagerRegistry;
 import io.trino.connector.CatalogManagerModule;
 import io.trino.connector.CatalogStoreManager;
 import io.trino.connector.ConnectorServicesProvider;
+import io.trino.connector.ProductConfig;
 import io.trino.eventlistener.EventListenerManager;
 import io.trino.eventlistener.EventListenerModule;
 import io.trino.exchange.ExchangeManagerModule;
@@ -129,6 +131,9 @@ public class Server
             log.info("Lz4 native compression: %s", formatEnabled(Lz4NativeCompressor.isEnabled()));
             log.info("Snappy native compression: %s", formatEnabled(SnappyNativeCompressor.isEnabled()));
 
+            ProductConfig.initializeRuntimeConfig(ProductConfig.CONFIG_FILE_NAME);
+            ProductConfig.setCurrentNodeIp(injector.getInstance(NodeInfo.class).getInternalAddress());
+
             injector.getInstance(PluginInstaller.class).loadPlugins();
             // Caches can be requested for initial catalogs so we need to wire these first
             injector.getInstance(CacheManagerRegistry.class).loadCacheManagers();
@@ -138,6 +143,7 @@ public class Server
 
             ConnectorServicesProvider connectorServicesProvider = injector.getInstance(ConnectorServicesProvider.class);
             connectorServicesProvider.loadInitialCatalogs();
+            ProductConfig.startPatchConfigFileListener();
 
             injector.getInstance(SessionPropertyDefaults.class).loadConfigurationManager();
             injector.getInstance(ResourceGroupManager.class).loadConfigurationManager();

@@ -74,6 +74,8 @@ public class PluginManager
 {
     private static final List<String> SPI_PACKAGES = ImmutableList.<String>builder()
             .add("io.trino.spi.")
+            // ProductConfig holds process-wide runtime config and the current node address.
+            .add("io.trino.connector.ProductConfig")
             // JSON values cross the SPI as the native Java type of a column.
             .add("io.trino.json.")
             .add("com.fasterxml.jackson.annotation.")
