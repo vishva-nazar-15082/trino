@@ -318,7 +318,7 @@ public class PostgreSqlClient
             IdentifierMapping identifierMapping,
             RemoteQueryModifier queryModifier)
     {
-        super("\"", connectionFactory, queryBuilder, config.getJdbcTypesMappedToVarchar(), identifierMapping, queryModifier, true);
+        super("\"", connectionFactory, queryBuilder, config.getJdbcTypesMappedToVarchar(), identifierMapping, queryModifier, true, config.getConnectionUrl());
         this.jsonType = typeManager.getType(new TypeDescriptor(JSON));
         this.uuidType = typeManager.getType(new TypeDescriptor(StandardTypes.UUID));
         this.varcharMapType = new MapType(VARCHAR, VARCHAR, typeManager.getTypeOperators());

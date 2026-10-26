@@ -22,6 +22,7 @@ import com.google.inject.Provides;
 import com.google.inject.Scopes;
 import com.google.inject.Singleton;
 import io.opentelemetry.api.OpenTelemetry;
+import io.trino.jsonresultimpl.JsonRestJdbcDriver;
 import io.trino.plugin.jdbc.BaseJdbcConfig;
 import io.trino.plugin.jdbc.ConnectionFactory;
 import io.trino.plugin.jdbc.DriverConnectionFactory;
@@ -55,7 +56,7 @@ public class OracleClientModule
     @Override
     public void configure(Binder binder)
     {
-        binder.bind(JdbcClient.class).annotatedWith(ForBaseJdbc.class).to(OracleClient.class).in(Scopes.SINGLETON);
+        binder.bind(JdbcClient.class).annotatedWith(ForBaseJdbc.class).to(JsonRestOracleClient.class).in(Scopes.SINGLETON);
         newOptionalBinder(binder, TimestampTimeZoneDomain.class).setBinding().toInstance(TimestampTimeZoneDomain.ANY);
         bindSessionPropertiesProvider(binder, OracleSessionProperties.class);
         configBinder(binder).bindConfig(OracleConfig.class);
@@ -78,7 +79,7 @@ public class OracleClientModule
         connectionProperties.setProperty(OracleConnection.CONNECTION_PROPERTY_INCLUDE_SYNONYMS, String.valueOf(oracleConfig.isSynonymsEnabled()));
         connectionProperties.setProperty(OracleConnection.CONNECTION_PROPERTY_REPORT_REMARKS, String.valueOf(oracleConfig.isRemarksReportingEnabled()));
 
-        if (oracleConfig.isConnectionPoolEnabled()) {
+        if (oracleConfig.isConnectionPoolEnabled() && !JsonRestJdbcDriver.acceptsURLPattern(config.getConnectionUrl())) {
             return new OraclePoolConnectionFactory(
                     config.getConnectionUrl(),
                     connectionProperties,

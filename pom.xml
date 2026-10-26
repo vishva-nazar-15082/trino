@@ -111,6 +111,7 @@
         <module>plugin/trino-ranger</module>
         <module>plugin/trino-redis</module>
         <module>plugin/trino-redshift</module>
+        <module>plugin/trino-restful-jdbc</module>
         <module>plugin/trino-resource-group-managers</module>
         <module>plugin/trino-session-property-managers</module>
         <module>plugin/trino-singlestore</module>
@@ -208,6 +209,7 @@
         <dep.netty.version>4.2.19.Final</dep.netty.version>
         <dep.okhttp.version>5.5.0</dep.okhttp.version>
         <dep.okio.version>3.18.2</dep.okio.version>
+        <dep.org-json.version>20260814</dep.org-json.version>
         <dep.parquet.version>1.18.1</dep.parquet.version>
         <dep.protobuf.version>4.36.2</dep.protobuf.version>
         <dep.sis.version>1.7</dep.sis.version>
@@ -1376,6 +1378,12 @@
 
             <dependency>
                 <groupId>io.trino</groupId>
+                <artifactId>trino-restful-jdbc</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.trino</groupId>
                 <artifactId>trino-resource-group-managers</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -2135,6 +2143,12 @@
                 <groupId>org.jetbrains</groupId>
                 <artifactId>annotations</artifactId>
                 <version>26.1.0</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.json</groupId>
+                <artifactId>json</artifactId>
+                <version>${dep.org-json.version}</version>
             </dependency>
 
             <dependency>

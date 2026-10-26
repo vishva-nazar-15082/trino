@@ -327,7 +327,7 @@ public class SqlServerClient
             IdentifierMapping identifierMapping,
             RemoteQueryModifier queryModifier)
     {
-        super("\"", connectionFactory, queryBuilder, config.getJdbcTypesMappedToVarchar(), identifierMapping, queryModifier, true);
+        super("\"", connectionFactory, queryBuilder, config.getJdbcTypesMappedToVarchar(), identifierMapping, queryModifier, true, config.getConnectionUrl());
 
         requireNonNull(typeManager, "typeManager is null");
         jsonType = typeManager.getType(new TypeDescriptor(JSON));

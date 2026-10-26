@@ -35,11 +35,20 @@ import io.trino.plugin.jdbc.ptf.Query;
 import io.trino.spi.function.table.ConnectorTableFunction;
 
 import java.sql.SQLException;
+import java.util.Optional;
 import java.util.Properties;
 
 import static com.google.inject.multibindings.Multibinder.newSetBinder;
 import static com.google.inject.multibindings.OptionalBinder.newOptionalBinder;
 import static io.airlift.configuration.ConfigBinder.configBinder;
+import static io.trino.jsonresultimpl.JSONResultImpConstants.ADDITIONAL_DATA;
+import static io.trino.jsonresultimpl.JSONResultImpConstants.AUTHENTICATION_KEY;
+import static io.trino.jsonresultimpl.JSONResultImpConstants.AUTHENTICATION_RESOURCE;
+import static io.trino.jsonresultimpl.JSONResultImpConstants.AUTHENTICATION_URL;
+import static io.trino.jsonresultimpl.JSONResultImpConstants.CURRENT_BATCH_KEY;
+import static io.trino.jsonresultimpl.JSONResultImpConstants.GET_NEXT_BATCH_URL;
+import static io.trino.jsonresultimpl.JSONResultImpConstants.GET_RESULT_URL;
+import static io.trino.jsonresultimpl.JSONResultImpConstants.NEXT_BATCH_KEY;
 import static io.trino.plugin.jdbc.DecimalModule.MappingToNumber.ON_BY_DEFAULT;
 import static io.trino.plugin.jdbc.JdbcModule.bindTablePropertiesProvider;
 
@@ -49,7 +58,7 @@ public class MySqlClientModule
     @Override
     protected void setup(Binder binder)
     {
-        binder.bind(JdbcClient.class).annotatedWith(ForBaseJdbc.class).to(MySqlClient.class).in(Scopes.SINGLETON);
+        binder.bind(JdbcClient.class).annotatedWith(ForBaseJdbc.class).to(JsonRestMySqlClient.class).in(Scopes.SINGLETON);
         configBinder(binder).bindConfigDefaults(JdbcMetadataConfig.class, config -> config.setBulkListColumns(true));
         newOptionalBinder(binder, TimestampTimeZoneDomain.class).setBinding().toInstance(TimestampTimeZoneDomain.UTC_ONLY);
         configBinder(binder).bindConfig(MySqlJdbcConfig.class);
@@ -95,6 +104,14 @@ public class MySqlClientModule
         if (mySqlConfig.getConnectionTimeout() != null) {
             connectionProperties.setProperty("connectTimeout", String.valueOf(mySqlConfig.getConnectionTimeout().toMillis()));
         }
+        Optional.ofNullable(mySqlConfig.getAuthenticationUrl()).ifPresent(value -> connectionProperties.setProperty(AUTHENTICATION_URL, value));
+        Optional.ofNullable(mySqlConfig.getAuthenticationResource()).ifPresent(value -> connectionProperties.setProperty(AUTHENTICATION_RESOURCE, value));
+        Optional.ofNullable(mySqlConfig.getAuthenticationKey()).ifPresent(value -> connectionProperties.setProperty(AUTHENTICATION_KEY, value));
+        Optional.ofNullable(mySqlConfig.getGetResultUrl()).ifPresent(value -> connectionProperties.setProperty(GET_RESULT_URL, value));
+        Optional.ofNullable(mySqlConfig.getGetNextBatchUrl()).ifPresent(value -> connectionProperties.setProperty(GET_NEXT_BATCH_URL, value));
+        Optional.ofNullable(mySqlConfig.getCurrentBatchKey()).ifPresent(value -> connectionProperties.setProperty(CURRENT_BATCH_KEY, value));
+        Optional.ofNullable(mySqlConfig.getNextBatchKey()).ifPresent(value -> connectionProperties.setProperty(NEXT_BATCH_KEY, value));
+        Optional.ofNullable(mySqlConfig.getAdditionalData()).ifPresent(value -> connectionProperties.setProperty(ADDITIONAL_DATA, value));
         return connectionProperties;
     }
 }
