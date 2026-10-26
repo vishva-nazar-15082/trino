@@ -16,7 +16,8 @@ package io.trino.plugin.oracle;
 import io.airlift.units.Duration;
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.instrumentation.jdbc.datasource.JdbcTelemetry;
-import io.trino.plugin.jdbc.ConnectionFactory;
+import io.trino.connectivity.SSHTunnelUtil.SSHTunnelCredential;
+import io.trino.plugin.jdbc.DriverConnectionFactory;
 import io.trino.plugin.jdbc.credential.CredentialProvider;
 import io.trino.spi.connector.ConnectorSession;
 import oracle.jdbc.pool.OracleDataSource;
@@ -34,26 +35,31 @@ import static java.lang.Math.toIntExact;
 import static java.util.concurrent.TimeUnit.SECONDS;
 
 public class OraclePoolConnectionFactory
-        implements ConnectionFactory
+        extends DriverConnectionFactory
 {
     private final DataSource dataSource;
+    private final PoolDataSource poolDataSource;
 
     public OraclePoolConnectionFactory(
             String connectionUrl,
+            String connectionHost,
+            int connectionPort,
             Properties connectionProperties,
             CredentialProvider credentialProvider,
             int connectionPoolMinSize,
             int connectionPoolMaxSize,
             Duration inactiveConnectionTimeout,
             Duration connectionPoolWaitDuration,
-            OpenTelemetry openTelemetry)
+            OpenTelemetry openTelemetry,
+            SSHTunnelCredential tunnelCredential)
             throws SQLException
     {
+        super(null, connectionUrl, connectionProperties, connectionHost, connectionPort, null, openTelemetry, tunnelCredential);
         PoolDataSource dataSource = PoolDataSourceFactory.getPoolDataSource();
 
         // Setting connection properties of the data source
         dataSource.setConnectionFactoryClassName(OracleDataSource.class.getName());
-        dataSource.setURL(connectionUrl);
+        dataSource.setURL(currentConnectionUrl());
 
         // Setting pool properties
         dataSource.setInitialPoolSize(connectionPoolMinSize);
@@ -85,6 +91,7 @@ public class OraclePoolConnectionFactory
         JdbcTelemetry jdbcTelemetry = JdbcTelemetry.builder(openTelemetry)
                 .setDataSourceInstrumenterEnabled(true)
                 .build();
+        this.poolDataSource = dataSource;
         this.dataSource = jdbcTelemetry.wrap(dataSource);
     }
 
@@ -92,10 +99,13 @@ public class OraclePoolConnectionFactory
     public Connection openConnection(ConnectorSession session)
             throws SQLException
     {
+        checkTunnel();
+        updateTunnelAddress();
+        poolDataSource.setURL(currentConnectionUrl());
         Connection connection = dataSource.getConnection();
         // Oracle's pool doesn't reset autocommit state of connections when reusing them so we explicitly enable
         // autocommit by default to match the JDBC specification.
         connection.setAutoCommit(true);
-        return connection;
+        return finishConnection(connection);
     }
 }

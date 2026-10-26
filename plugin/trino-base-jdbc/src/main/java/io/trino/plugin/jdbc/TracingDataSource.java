@@ -24,6 +24,7 @@ import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.SQLException;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
 
 import static io.trino.plugin.jdbc.JdbcErrorCode.JDBC_ERROR;
@@ -33,9 +34,9 @@ public class TracingDataSource
 {
     private final JdbcTelemetry jdbcTelemetry;
     private final Driver driver;
-    private final String connectionUrl;
+    private final AtomicReference<String> connectionUrl;
 
-    public TracingDataSource(OpenTelemetry openTelemetry, Driver driver, String connectionUrl)
+    public TracingDataSource(OpenTelemetry openTelemetry, Driver driver, AtomicReference<String> connectionUrl)
     {
         this.jdbcTelemetry = JdbcTelemetry.builder(requireNonNull(openTelemetry, "openTelemetry is null")).build();
         this.driver = requireNonNull(driver, "driver is null");
@@ -53,10 +54,10 @@ public class TracingDataSource
             implements DataSource
     {
         private final Driver driver;
-        private final String connectionUrl;
+        private final AtomicReference<String> connectionUrl;
         private final Properties properties;
 
-        public JdbcDataSource(Driver driver, String connectionUrl, Properties properties)
+        public JdbcDataSource(Driver driver, AtomicReference<String> connectionUrl, Properties properties)
         {
             this.driver = requireNonNull(driver, "driver is null");
             this.connectionUrl = requireNonNull(connectionUrl, "connectionUrl is null");
@@ -67,9 +68,10 @@ public class TracingDataSource
         public Connection getConnection()
                 throws SQLException
         {
-            Connection connection = driver.connect(connectionUrl, properties);
+            String url = connectionUrl.get();
+            Connection connection = driver.connect(url, properties);
             if (connection == null) {
-                throw new TrinoException(JDBC_ERROR, "Driver returned null connection, make sure the connection URL '%s' and credentials are valid".formatted(connectionUrl));
+                throw new TrinoException(JDBC_ERROR, "Driver returned null connection, make sure the connection URL '%s' and credentials are valid".formatted(url));
             }
             return connection;
         }

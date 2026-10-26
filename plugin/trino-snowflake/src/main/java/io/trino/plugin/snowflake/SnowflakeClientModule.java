@@ -99,7 +99,7 @@ public class SnowflakeClientModule
             }
         }
 
-        return DriverConnectionFactory.builder(new SnowflakeDriver(), baseJdbcConfig.getConnectionUrl(), credentialProvider)
+        return DriverConnectionFactory.builder(new SnowflakeDriver(), baseJdbcConfig.getConnectionUrl(), baseJdbcConfig.getConnectionHost(), baseJdbcConfig.getConnectionPort(), credentialProvider, baseJdbcConfig.sshTunnelCredential())
                 .setConnectionProperties(properties)
                 .setOpenTelemetry(openTelemetry)
                 .build();

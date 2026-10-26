@@ -41,7 +41,7 @@ public class SqlServerConnectionFactoryModule
             OpenTelemetry openTelemetry)
     {
         return new SqlServerConnectionFactory(
-                DriverConnectionFactory.builder(new SQLServerDriver(), config.getConnectionUrl(), credentialProvider)
+                DriverConnectionFactory.builder(new SQLServerDriver(), config.getConnectionUrl(), config.getConnectionHost(), config.getConnectionPort(), credentialProvider, config.sshTunnelCredential())
                         .setOpenTelemetry(openTelemetry)
                         .build(),
                 sqlServerConfig.isSnapshotIsolationDisabled());

@@ -42,7 +42,7 @@ public class PostgreSqlConnectionFactoryModule
     {
         Properties connectionProperties = new Properties();
         connectionProperties.put(REWRITE_BATCHED_INSERTS.getName(), "true");
-        return DriverConnectionFactory.builder(new Driver(), config.getConnectionUrl(), credentialProvider)
+        return DriverConnectionFactory.builder(new Driver(), config.getConnectionUrl(), config.getConnectionHost(), config.getConnectionPort(), credentialProvider, config.sshTunnelCredential())
                 .setConnectionProperties(connectionProperties)
                 .setOpenTelemetry(openTelemetry)
                 .build();

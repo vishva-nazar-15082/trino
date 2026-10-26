@@ -96,7 +96,10 @@ public class RedshiftClientModule
         return DriverConnectionFactory.builder(
                         new Driver(),
                         config.getConnectionUrl(),
-                        credentialProvider)
+                        config.getConnectionHost(),
+                        config.getConnectionPort(),
+                        credentialProvider,
+                        config.sshTunnelCredential())
                 .setConnectionProperties(properties)
                 .setOpenTelemetry(openTelemetry)
                 .build();

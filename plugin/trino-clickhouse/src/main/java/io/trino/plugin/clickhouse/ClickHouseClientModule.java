@@ -74,7 +74,7 @@ public class ClickHouseClientModule
         properties.setProperty(ClientConfigProperties.BINARY_STRING_SUPPORT.getKey(), "true");
         // SHOW statements based metadata returns null table comments
         properties.setProperty(DriverProperties.METADATA_USE_SHOW_STATEMENTS.getKey(), "false");
-        return new ClickHouseConnectionFactory(DriverConnectionFactory.builder(new Driver(), config.getConnectionUrl(), credentialProvider)
+        return new ClickHouseConnectionFactory(DriverConnectionFactory.builder(new Driver(), config.getConnectionUrl(), config.getConnectionHost(), config.getConnectionPort(), credentialProvider, config.sshTunnelCredential())
                 .setConnectionProperties(properties)
                 .setOpenTelemetry(openTelemetry)
                 .build());

@@ -61,7 +61,7 @@ public class SingleStoreClientModule
         connectionProperties.setProperty("autoReconnect", String.valueOf(singleStoreConfig.isAutoReconnect()));
         connectionProperties.setProperty("connectTimeout", String.valueOf(singleStoreConfig.getConnectionTimeout().toMillis()));
 
-        return DriverConnectionFactory.builder(new Driver(), config.getConnectionUrl(), credentialProvider)
+        return DriverConnectionFactory.builder(new Driver(), config.getConnectionUrl(), config.getConnectionHost(), config.getConnectionPort(), credentialProvider, config.sshTunnelCredential())
                 .setConnectionProperties(connectionProperties)
                 .setOpenTelemetry(openTelemetry)
                 .build();

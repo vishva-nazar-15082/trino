@@ -58,7 +58,10 @@ public class ExasolClientModule
         return DriverConnectionFactory.builder(
                         new EXADriver(),
                         config.getConnectionUrl(),
-                        credentialProvider)
+                        config.getConnectionHost(),
+                        config.getConnectionPort(),
+                        credentialProvider,
+                        config.sshTunnelCredential())
                 .setConnectionProperties(connectionProperties)
                 .setOpenTelemetry(openTelemetry)
                 .build();
