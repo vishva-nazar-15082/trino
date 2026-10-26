@@ -16,6 +16,7 @@ package io.trino.plugin.mysql;
 import com.mysql.cj.conf.ConnectionUrlParser;
 import com.mysql.cj.exceptions.CJException;
 import com.mysql.cj.jdbc.Driver;
+import io.trino.jsonresultimpl.JsonRestJdbcDriver;
 import io.trino.plugin.jdbc.BaseJdbcConfig;
 import jakarta.validation.constraints.AssertTrue;
 
@@ -31,7 +32,7 @@ public class MySqlJdbcConfig
     public boolean isUrlValid()
     {
         try {
-            return new Driver().acceptsURL(getConnectionUrl());
+            return JsonRestJdbcDriver.acceptsURLPattern(getConnectionUrl()) || new Driver().acceptsURL(getConnectionUrl());
         }
         catch (SQLException e) {
             throw new RuntimeException(e);
@@ -42,6 +43,9 @@ public class MySqlJdbcConfig
     public boolean isUrlWithoutDatabase()
     {
         try {
+            if (JsonRestJdbcDriver.acceptsURLPattern(getConnectionUrl())) {
+                return true;
+            }
             ConnectionUrlParser parser = parseConnectionString(getConnectionUrl());
             return isNullOrEmpty(parser.getPath());
         }

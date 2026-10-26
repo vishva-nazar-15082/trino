@@ -37,7 +37,7 @@ public class PostgreSqlClientModule
     @Override
     public void setup(Binder binder)
     {
-        binder.bind(JdbcClient.class).annotatedWith(ForBaseJdbc.class).to(PostgreSqlClient.class).in(Scopes.SINGLETON);
+        binder.bind(JdbcClient.class).annotatedWith(ForBaseJdbc.class).to(JsonRestPostgreSqlClient.class).in(Scopes.SINGLETON);
         configBinder(binder).bindConfig(PostgreSqlConfig.class);
         configBinder(binder).bindConfig(JdbcStatisticsConfig.class);
         bindSessionPropertiesProvider(binder, PostgreSqlSessionProperties.class);
