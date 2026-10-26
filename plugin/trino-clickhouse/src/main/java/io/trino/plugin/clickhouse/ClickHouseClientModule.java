@@ -67,7 +67,7 @@ public class ClickHouseClientModule
         // clickhouse-jdbc decodes them as UTF-8 (replacing invalid sequences with U+FFFD) before
         // getBytes() re-encodes, corrupting non-UTF-8 varbinary data.
         properties.setProperty(ClientConfigProperties.BINARY_STRING_SUPPORT.getKey(), "true");
-        return new ClickHouseConnectionFactory(DriverConnectionFactory.builder(new Driver(), config.getConnectionUrl(), credentialProvider)
+        return new ClickHouseConnectionFactory(DriverConnectionFactory.builder(new Driver(), config.getConnectionUrl(), config.getConnectionHost(), config.getConnectionPort(), credentialProvider, config.sshTunnelCredential())
                 .setConnectionProperties(properties)
                 .setOpenTelemetry(openTelemetry)
                 .build());

@@ -67,7 +67,7 @@ public class MySqlClientModule
     public static ConnectionFactory createConnectionFactory(BaseJdbcConfig config, CredentialProvider credentialProvider, MySqlConfig mySqlConfig, OpenTelemetry openTelemetry)
             throws SQLException
     {
-        return DriverConnectionFactory.builder(new Driver(), config.getConnectionUrl(), credentialProvider)
+        return DriverConnectionFactory.builder(new Driver(), config.getConnectionUrl(), config.getConnectionHost(), config.getConnectionPort(), credentialProvider, config.sshTunnelCredential())
                 .setConnectionProperties(getConnectionProperties(mySqlConfig))
                 .setOpenTelemetry(openTelemetry)
                 .build();

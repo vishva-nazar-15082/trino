@@ -42,6 +42,7 @@
         <module>docs</module>
         <module>lib/trino-array</module>
         <module>lib/trino-cache</module>
+        <module>lib/trino-connectivity</module>
         <module>lib/trino-filesystem</module>
         <module>lib/trino-filesystem-azure</module>
         <module>lib/trino-filesystem-gcs</module>
@@ -212,6 +213,7 @@
         <dep.protobuf.version>4.36.2</dep.protobuf.version>
         <dep.sis.version>1.7</dep.sis.version>
         <dep.snowflake.version>4.4.0</dep.snowflake.version>
+        <dep.sshd.version>2.15.0</dep.sshd.version>
         <dep.swagger.version>2.2.55</dep.swagger.version>
         <dep.takari.version>2.3.4</dep.takari.version>
         <dep.tcnative.version>2.0.84.Final</dep.tcnative.version>
@@ -977,6 +979,12 @@
             <dependency>
                 <groupId>io.trino</groupId>
                 <artifactId>trino-cache</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.trino</groupId>
+                <artifactId>trino-connectivity</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -2068,6 +2076,12 @@
                 <groupId>org.apache.sis.non-free</groupId>
                 <artifactId>sis-embedded-data</artifactId>
                 <version>${dep.sis.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.sshd</groupId>
+                <artifactId>sshd-core</artifactId>
+                <version>${dep.sshd.version}</version>
             </dependency>
 
             <dependency>

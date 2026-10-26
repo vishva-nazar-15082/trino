@@ -62,7 +62,10 @@ public final class DuckDbClientModule
         return new DuplicatingConnectionFactory(credentialProvider, DriverConnectionFactory.builder(
                         new DuckDBDriver(),
                         config.getConnectionUrl(),
-                        credentialProvider)
+                        config.getConnectionHost(),
+                        config.getConnectionPort(),
+                        credentialProvider,
+                        config.sshTunnelCredential())
                 .setConnectionProperties(connectionProperties)
                 .setOpenTelemetry(openTelemetry)
                 .build());

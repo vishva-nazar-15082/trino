@@ -81,16 +81,19 @@ public class OracleClientModule
         if (oracleConfig.isConnectionPoolEnabled()) {
             return new OraclePoolConnectionFactory(
                     config.getConnectionUrl(),
+                    config.getConnectionHost(),
+                    config.getConnectionPort(),
                     connectionProperties,
                     credentialProvider,
                     oracleConfig.getConnectionPoolMinSize(),
                     oracleConfig.getConnectionPoolMaxSize(),
                     oracleConfig.getInactiveConnectionTimeout(),
                     oracleConfig.getConnectionPoolWaitDuration(),
-                    openTelemetry);
+                    openTelemetry,
+                    config.sshTunnelCredential());
         }
 
-        return DriverConnectionFactory.builder(new OracleDriver(), config.getConnectionUrl(), credentialProvider)
+        return DriverConnectionFactory.builder(new OracleDriver(), config.getConnectionUrl(), config.getConnectionHost(), config.getConnectionPort(), credentialProvider, config.sshTunnelCredential())
                 .setConnectionProperties(connectionProperties)
                 .setOpenTelemetry(openTelemetry)
                 .build();

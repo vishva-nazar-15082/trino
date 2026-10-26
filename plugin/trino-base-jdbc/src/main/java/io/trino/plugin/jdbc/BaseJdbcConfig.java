@@ -17,6 +17,7 @@ import com.google.common.collect.ImmutableSet;
 import io.airlift.configuration.Config;
 import io.airlift.configuration.ConfigDescription;
 import io.airlift.configuration.DefunctConfig;
+import io.trino.connectivity.SSHTunnelUtil.SSHTunnelCredential;
 import io.airlift.units.Duration;
 import io.airlift.units.MinDuration;
 import jakarta.validation.constraints.AssertTrue;
@@ -41,6 +42,12 @@ public class BaseJdbcConfig
     private static final long DEFAULT_METADATA_CACHE_SIZE = 10000;
 
     private String connectionUrl;
+    private String connectionHost;
+    private int connectionPort;
+    private String sshTunnelHost;
+    private Integer sshTunnelPort;
+    private String sshTunnelUser;
+    private String sshTunnelPassword;
     private Set<String> jdbcTypesMappedToVarchar = ImmutableSet.of();
     private Duration metadataCacheTtl = new Duration(0, SECONDS);
     private Optional<Duration> schemaNamesCacheTtl = Optional.empty();
@@ -62,6 +69,87 @@ public class BaseJdbcConfig
     {
         this.connectionUrl = connectionUrl;
         return this;
+    }
+
+    public String getConnectionHost()
+    {
+        return connectionHost;
+    }
+
+    @Config("connection-host")
+    @ConfigDescription("Remote database host used when opening an SSH tunnel")
+    public BaseJdbcConfig setConnectionHost(String connectionHost)
+    {
+        this.connectionHost = connectionHost;
+        return this;
+    }
+
+    public int getConnectionPort()
+    {
+        return connectionPort;
+    }
+
+    @Config("connection-port")
+    @ConfigDescription("Remote database port used when opening an SSH tunnel")
+    public BaseJdbcConfig setConnectionPort(int connectionPort)
+    {
+        this.connectionPort = connectionPort;
+        return this;
+    }
+
+    public String getSshTunnelHost()
+    {
+        return sshTunnelHost;
+    }
+
+    @Config("ssh-tunnel-host")
+    @ConfigDescription("SSH bastion host. When unset, the runtime tunnel host is used")
+    public BaseJdbcConfig setSshTunnelHost(String sshTunnelHost)
+    {
+        this.sshTunnelHost = sshTunnelHost;
+        return this;
+    }
+
+    public Integer getSshTunnelPort()
+    {
+        return sshTunnelPort;
+    }
+
+    @Config("ssh-tunnel-port")
+    @ConfigDescription("SSH bastion port. Defaults to 22 when unset")
+    public BaseJdbcConfig setSshTunnelPort(Integer sshTunnelPort)
+    {
+        this.sshTunnelPort = sshTunnelPort;
+        return this;
+    }
+
+    public String getSshTunnelUser()
+    {
+        return sshTunnelUser;
+    }
+
+    @Config("ssh-tunnel-user")
+    public BaseJdbcConfig setSshTunnelUser(String sshTunnelUser)
+    {
+        this.sshTunnelUser = sshTunnelUser;
+        return this;
+    }
+
+    public String getSshTunnelPassword()
+    {
+        return sshTunnelPassword;
+    }
+
+    @Config("ssh-tunnel-password")
+    public BaseJdbcConfig setSshTunnelPassword(String sshTunnelPassword)
+    {
+        this.sshTunnelPassword = sshTunnelPassword;
+        return this;
+    }
+
+    public SSHTunnelCredential sshTunnelCredential()
+    {
+        return new SSHTunnelCredential(sshTunnelUser, sshTunnelPassword, sshTunnelHost, sshTunnelPort);
     }
 
     public Set<String> getJdbcTypesMappedToVarchar()

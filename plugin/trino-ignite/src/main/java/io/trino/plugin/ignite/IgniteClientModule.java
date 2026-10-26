@@ -57,7 +57,7 @@ public class IgniteClientModule
     public static ConnectionFactory createConnectionFactory(BaseJdbcConfig config, CredentialProvider credentialProvider, OpenTelemetry openTelemetry)
     {
         ClassLoader classLoader = IgniteClientModule.class.getClassLoader();
-        ConnectionFactory delegate = DriverConnectionFactory.builder(new IgniteJdbcThinDriver(), config.getConnectionUrl(), credentialProvider)
+        ConnectionFactory delegate = DriverConnectionFactory.builder(new IgniteJdbcThinDriver(), config.getConnectionUrl(), config.getConnectionHost(), config.getConnectionPort(), credentialProvider, config.sshTunnelCredential())
                 .setOpenTelemetry(openTelemetry)
                 .build();
         // IgniteJdbcThinDriver uses ServiceLoader.load(Class) (TCCL-based) during connection init.

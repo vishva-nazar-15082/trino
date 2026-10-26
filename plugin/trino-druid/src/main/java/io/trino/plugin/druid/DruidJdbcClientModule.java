@@ -63,7 +63,7 @@ public class DruidJdbcClientModule
             // https://druid.apache.org/docs/latest/querying/query-context-reference/
             connectionProperties.setProperty("timeout", String.valueOf(druidConfig.getExecutionTimeout().get().toMillis()));
         }
-        return DriverConnectionFactory.builder(new Driver(), config.getConnectionUrl(), credentialProvider)
+        return DriverConnectionFactory.builder(new Driver(), config.getConnectionUrl(), config.getConnectionHost(), config.getConnectionPort(), credentialProvider, config.sshTunnelCredential())
                 .setOpenTelemetry(openTelemetry)
                 .setConnectionProperties(connectionProperties)
                 .build();
