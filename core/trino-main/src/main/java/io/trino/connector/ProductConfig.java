@@ -212,9 +212,10 @@ public final class ProductConfig
                                 Thread.sleep(1000);
                             }
                             initializeRuntimeConfig(CONFIG_FILE_NAME_PATCH);
+                            log.info("Deleting runtime config patch and lock files");
+                            Files.deleteIfExists(targetFile);
+                            Files.deleteIfExists(patchFile);
                         }
-                        Files.deleteIfExists(targetFile);
-                        Files.deleteIfExists(patchFile);
                     }
                     key.reset();
                 }
