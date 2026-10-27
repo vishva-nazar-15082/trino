@@ -74,7 +74,7 @@ public final class SSHTunnelUtil
                     .getSession();
             session.addPasswordIdentity(credential.password());
             session.auth().verify(5, TimeUnit.SECONDS);
-            SshdSocketAddress localAddress = new SshdSocketAddress("localhost", 0);
+            SshdSocketAddress localAddress = new SshdSocketAddress(address.getHostAddress(), 0);
             SshdSocketAddress remoteAddress = new SshdSocketAddress(host, port);
             PortForwardingTracker tracker = session.createLocalPortForwardingTracker(localAddress, remoteAddress);
             SSHTunnel sshTunnel = new SSHTunnel(client, session, tracker);
