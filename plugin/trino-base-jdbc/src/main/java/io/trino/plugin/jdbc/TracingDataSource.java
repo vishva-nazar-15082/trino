@@ -62,7 +62,7 @@ public class TracingDataSource
         {
             Driver selectedDriver = driver;
             JsonRestJdbcDriver jsonDriver = new JsonRestJdbcDriver();
-            if (jsonDriver.acceptsURL(connectionUrl)) {
+            if (jsonDriver.acceptsURL(connectionUrl.get())) {
                 selectedDriver = jsonDriver;
             }
             this.driver = requireNonNull(selectedDriver, "driver is null");
