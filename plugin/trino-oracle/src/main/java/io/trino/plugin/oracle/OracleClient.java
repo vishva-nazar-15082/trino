@@ -249,7 +249,7 @@ public class OracleClient
             IdentifierMapping identifierMapping,
             RemoteQueryModifier queryModifier)
     {
-        super("\"", connectionFactory, queryBuilder, config.getJdbcTypesMappedToVarchar(), identifierMapping, queryModifier, true);
+        super("\"", connectionFactory, queryBuilder, config.getJdbcTypesMappedToVarchar(), identifierMapping, queryModifier, true, config.getConnectionUrl());
 
         this.synonymsEnabled = oracleConfig.isSynonymsEnabled();
 

@@ -239,7 +239,7 @@ public class ClickHouseClient
             IdentifierMapping identifierMapping,
             RemoteQueryModifier queryModifier)
     {
-        super("\"", connectionFactory, queryBuilder, config.getJdbcTypesMappedToVarchar(), identifierMapping, queryModifier, false);
+        super("\"", connectionFactory, queryBuilder, config.getJdbcTypesMappedToVarchar(), identifierMapping, queryModifier, false, config.getConnectionUrl());
         clusterName = clickHouseConfig.getClusterName();
         this.uuidType = typeManager.getType(new TypeDescriptor(StandardTypes.UUID));
         this.ipAddressType = typeManager.getType(new TypeDescriptor(StandardTypes.IPADDRESS));

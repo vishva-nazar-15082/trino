@@ -188,7 +188,7 @@ public class SingleStoreClient
             RemoteQueryModifier queryModifier,
             boolean supportsRetries)
     {
-        super("`", connectionFactory, queryBuilder, config.getJdbcTypesMappedToVarchar(), identifierMapping, queryModifier, supportsRetries);
+        super("`", connectionFactory, queryBuilder, config.getJdbcTypesMappedToVarchar(), identifierMapping, queryModifier, supportsRetries, config.getConnectionUrl());
         requireNonNull(typeManager, "typeManager is null");
         this.jsonType = typeManager.getType(new TypeDescriptor(StandardTypes.JSON));
 

@@ -299,7 +299,7 @@ public class MySqlClient
             IdentifierMapping identifierMapping,
             RemoteQueryModifier queryModifier)
     {
-        super("`", connectionFactory, queryBuilder, config.getJdbcTypesMappedToVarchar(), identifierMapping, queryModifier, true);
+        super("`", connectionFactory, queryBuilder, config.getJdbcTypesMappedToVarchar(), identifierMapping, queryModifier, true, config.getConnectionUrl());
         this.jsonType = typeManager.getType(new TypeDescriptor(StandardTypes.JSON));
         this.statisticsEnabled = statisticsConfig.isEnabled();
 

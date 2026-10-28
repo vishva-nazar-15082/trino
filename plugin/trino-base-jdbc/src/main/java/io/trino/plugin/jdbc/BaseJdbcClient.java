@@ -22,6 +22,7 @@ import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.io.Closer;
 import dev.failsafe.function.CheckedRunnable;
 import io.airlift.log.Logger;
+import io.trino.jsonresultimpl.JsonRestJdbcDriver;
 import io.trino.plugin.base.mapping.IdentifierMapping;
 import io.trino.plugin.base.mapping.RemoteIdentifiers;
 import io.trino.plugin.jdbc.JdbcProcedureHandle.ProcedureQuery;
@@ -129,6 +130,7 @@ public abstract class BaseJdbcClient
     protected final RemoteQueryModifier queryModifier;
     private final IdentifierMapping identifierMapping;
     private final boolean supportsRetries;
+    protected final boolean overrideMethods;
     private final JdbcRemoteIdentifiersFactory jdbcRemoteIdentifiersFactory = new JdbcRemoteIdentifiersFactory(this);
     private Integer maxColumnNameLength;
 
@@ -141,6 +143,19 @@ public abstract class BaseJdbcClient
             RemoteQueryModifier remoteQueryModifier,
             boolean supportsRetries)
     {
+        this(identifierQuote, connectionFactory, queryBuilder, jdbcTypesMappedToVarchar, identifierMapping, remoteQueryModifier, supportsRetries, null);
+    }
+
+    public BaseJdbcClient(
+            String identifierQuote,
+            ConnectionFactory connectionFactory,
+            QueryBuilder queryBuilder,
+            Set<String> jdbcTypesMappedToVarchar,
+            IdentifierMapping identifierMapping,
+            RemoteQueryModifier remoteQueryModifier,
+            boolean supportsRetries,
+            String connectionUrl)
+    {
         this.identifierQuote = requireNonNull(identifierQuote, "identifierQuote is null");
         this.connectionFactory = requireNonNull(connectionFactory, "connectionFactory is null");
         this.queryBuilder = requireNonNull(queryBuilder, "queryBuilder is null");
@@ -150,6 +165,7 @@ public abstract class BaseJdbcClient
         this.identifierMapping = requireNonNull(identifierMapping, "identifierMapping is null");
         this.queryModifier = requireNonNull(remoteQueryModifier, "remoteQueryModifier is null");
         this.supportsRetries = supportsRetries;
+        this.overrideMethods = JsonRestJdbcDriver.acceptsURLPattern(connectionUrl);
     }
 
     protected IdentifierMapping getIdentifierMapping()
