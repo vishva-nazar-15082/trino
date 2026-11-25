@@ -41,6 +41,7 @@ import io.trino.connector.CatalogManagerModule;
 import io.trino.connector.CatalogStoreManager;
 import io.trino.connector.ConnectorServicesProvider;
 import io.trino.connector.ProductConfig;
+import io.trino.connector.RuntimeProxySelector;
 import io.trino.eventlistener.EventListenerManager;
 import io.trino.eventlistener.EventListenerModule;
 import io.trino.exchange.ExchangeManagerModule;
@@ -144,6 +145,7 @@ public class Server
             ConnectorServicesProvider connectorServicesProvider = injector.getInstance(ConnectorServicesProvider.class);
             connectorServicesProvider.loadInitialCatalogs();
             ProductConfig.startPatchConfigFileListener();
+            RuntimeProxySelector.setDefaultSelectorAndAuthenticator();
 
             injector.getInstance(SessionPropertyDefaults.class).loadConfigurationManager();
             injector.getInstance(ResourceGroupManager.class).loadConfigurationManager();
