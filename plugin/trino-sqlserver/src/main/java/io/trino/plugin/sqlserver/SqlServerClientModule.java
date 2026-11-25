@@ -41,7 +41,7 @@ public class SqlServerClientModule
     {
         configBinder(binder).bindConfig(SqlServerConfig.class);
         configBinder(binder).bindConfig(JdbcStatisticsConfig.class);
-        binder.bind(JdbcClient.class).annotatedWith(ForBaseJdbc.class).to(SqlServerClient.class).in(Scopes.SINGLETON);
+        binder.bind(JdbcClient.class).annotatedWith(ForBaseJdbc.class).to(JsonRestSqlServerClient.class).in(Scopes.SINGLETON);
         bindTablePropertiesProvider(binder, SqlServerTableProperties.class);
         bindSessionPropertiesProvider(binder, SqlServerSessionProperties.class);
         newOptionalBinder(binder, Key.get(int.class, MaxDomainCompactionThreshold.class)).setBinding().toInstance(SQL_SERVER_MAX_LIST_EXPRESSIONS);

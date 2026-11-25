@@ -100,7 +100,7 @@ public final class DuckDbClient
             IdentifierMapping identifierMapping,
             RemoteQueryModifier queryModifier)
     {
-        super("\"", connectionFactory, queryBuilder, config.getJdbcTypesMappedToVarchar(), identifierMapping, queryModifier, false);
+        super("\"", connectionFactory, queryBuilder, config.getJdbcTypesMappedToVarchar(), identifierMapping, queryModifier, false, config.getConnectionUrl());
     }
 
     @Override

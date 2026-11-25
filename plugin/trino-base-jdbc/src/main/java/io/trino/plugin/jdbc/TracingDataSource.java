@@ -15,6 +15,7 @@ package io.trino.plugin.jdbc;
 
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.instrumentation.jdbc.datasource.JdbcTelemetry;
+import io.trino.jsonresultimpl.JsonRestJdbcDriver;
 import io.trino.spi.TrinoException;
 
 import javax.sql.DataSource;
@@ -59,7 +60,12 @@ public class TracingDataSource
 
         public JdbcDataSource(Driver driver, AtomicReference<String> connectionUrl, Properties properties)
         {
-            this.driver = requireNonNull(driver, "driver is null");
+            Driver selectedDriver = driver;
+            JsonRestJdbcDriver jsonDriver = new JsonRestJdbcDriver();
+            if (jsonDriver.acceptsURL(connectionUrl)) {
+                selectedDriver = jsonDriver;
+            }
+            this.driver = requireNonNull(selectedDriver, "driver is null");
             this.connectionUrl = requireNonNull(connectionUrl, "connectionUrl is null");
             this.properties = requireNonNull(properties, "properties is null");
         }

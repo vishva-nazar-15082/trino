@@ -113,7 +113,7 @@ public class ExasolClient
             IdentifierMapping identifierMapping,
             RemoteQueryModifier queryModifier)
     {
-        super("\"", connectionFactory, queryBuilder, config.getJdbcTypesMappedToVarchar(), identifierMapping, queryModifier, false);
+        super("\"", connectionFactory, queryBuilder, config.getJdbcTypesMappedToVarchar(), identifierMapping, queryModifier, false, config.getConnectionUrl());
     }
 
     @Override
